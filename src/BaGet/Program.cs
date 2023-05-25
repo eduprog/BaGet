@@ -94,7 +94,7 @@ namespace BaGet
                     web.UseUrls(
                         //$"http://*:61437",
                         $"https://*:61438");
-                    web.ConfigureKestrel(options =>
+                    _ = web.ConfigureKestrel(options =>
                     {
                         // Remove the upload limit from Kestrel. If needed, an upload limit can
                         // be enforced by a reverse proxy server, like IIS.
@@ -102,8 +102,8 @@ namespace BaGet
                         //options.ListenAnyIP(61437);
                         options.ListenAnyIP(61438, cfg =>
                         {
-                            string certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
-                            string keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
+                            var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
+                            var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
                             var cert = new X509Certificate2(certPath);
                             cfg.UseHttps(cert);
                         });

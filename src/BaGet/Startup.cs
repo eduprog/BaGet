@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using BaGet.Core;
 using BaGet.Web;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +19,13 @@ namespace BaGet
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
+            var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
+            string password = "@BReSistem2023#";
+            configuration["Kestrel:Certificates:Default:Path"] = certPath;
+            configuration["Kestrel:Certificates:Default:KeyPath"] = keyPath;
+            configuration["Kestrel:Certificates:Default:Password"] = password;
+
         }
 
         private IConfiguration Configuration { get; }

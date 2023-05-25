@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using BaGet.Core;
@@ -91,10 +92,13 @@ namespace BaGet
                 })
                 .ConfigureWebHostDefaults(web =>
                 {
-                    web.UseUrls(
-                        //$"http://*:61437",
-                        $"https://*:61438");
-                    _ = web.ConfigureKestrel(options =>
+                    //web.UseUrls(
+                    //    //$"http://*:61437",
+                    //    $"https://*:61438");
+                    _ = web
+                        .UseUrls()
+                        .UseKestrel()
+                        .ConfigureKestrel(options =>
                     {
                         // Remove the upload limit from Kestrel. If needed, an upload limit can
                         // be enforced by a reverse proxy server, like IIS.
@@ -104,8 +108,10 @@ namespace BaGet
                         {
                             var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
                             var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
-                            var cert = new X509Certificate2(certPath);
-                            cfg.UseHttps(cert);
+                            string password = "@BReSistem2023#";
+                            var cert = new X509Certificate2(certPath,password);
+                            
+                            cfg.UseHttps();
                         });
 
                     });

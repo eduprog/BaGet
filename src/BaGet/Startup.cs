@@ -73,7 +73,6 @@ namespace BaGet
             app.AddAwsS3Storage();
             //app.AddAzureBlobStorage();
             app.AddGoogleCloudStorage();
-
             // Add search providers.
             //app.AddAzureSearch();
         }
@@ -104,6 +103,8 @@ namespace BaGet
 
                 baget.MapEndpoints(endpoints);
             });
+            
+            app.UseHsts();
         }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Web;
@@ -7,6 +9,25 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+
+/* 
+    - Publicando o projeto eSistemLoja.API
+    dotnet publish -c Release -r win-x64 --self-contained true --property:PublishDir=../../distro/setup/publish/
+
+    - Adicionar eSistemLojaAPI como serviço do windows
+    sc.exe create "eSistemLojaAPI" binpath=".\Projeto\Setup\Publish\eSistemLoja.API.exe" start= auto
+
+    - Inciando o serviço do windows eSistemLojaAPI
+    sc.exe start "eSistemLojaAPI"
+
+    - Parando o serviço do windows eSistemLojaAPI
+    sc.exe stop "eSistemLojaAPI"
+
+    - Removendo eSistemLojaAPI dos serviços do windows
+    sc.exe delete "eSistemLojaAPI"
+ */
+
 
 namespace BaGet
 {
@@ -57,7 +78,7 @@ namespace BaGet
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return Host
+            var host = Host
                 .CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((ctx, config) =>
                 {
@@ -70,15 +91,29 @@ namespace BaGet
                 })
                 .ConfigureWebHostDefaults(web =>
                 {
+                    web.UseUrls(
+                        //$"http://*:61437",
+                        $"https://*:61438");
                     web.ConfigureKestrel(options =>
                     {
                         // Remove the upload limit from Kestrel. If needed, an upload limit can
                         // be enforced by a reverse proxy server, like IIS.
                         options.Limits.MaxRequestBodySize = null;
+                        //options.ListenAnyIP(61437);
+                        options.ListenAnyIP(61438, cfg =>
+                        {
+                            string certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
+                            string keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
+                            var cert = new X509Certificate2(certPath);
+                            cfg.UseHttps(cert);
+                        });
+
                     });
 
                     web.UseStartup<Startup>();
                 });
+
+            return host;
         }
     }
 }

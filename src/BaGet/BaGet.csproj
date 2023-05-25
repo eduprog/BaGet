@@ -24,4 +24,13 @@
     <ProjectReference Include="..\BaGet.Protocol\BaGet.Protocol.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Certificados\cert.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Certificados\key.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

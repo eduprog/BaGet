@@ -7,6 +7,7 @@ using BaGet.Core;
 using BaGet.Web;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -102,16 +103,17 @@ namespace BaGet
                     {
                         // Remove the upload limit from Kestrel. If needed, an upload limit can
                         // be enforced by a reverse proxy server, like IIS.
-                        options.Limits.MaxRequestBodySize = null;
+                        //options.Limits.MaxRequestBodySize = null;
                         //options.ListenAnyIP(61437);
                         options.ListenAnyIP(61438, cfg =>
                         {
-                            var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
-                            var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
-                            string password = "@BReSistem2023#";
-                            var cert = new X509Certificate2(certPath,password);
-                            
-                            cfg.UseHttps();
+                            //var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "mycert.crt");
+                            //////var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
+                            //////string password = "@BReSistem2023#";
+                            //var cert = new X509Certificate2(certPath);
+                            //var connectionOptions = new HttpsConnectionAdapterOptions();
+                            //connectionOptions.ServerCertificate = cert;
+                            //cfg.UseHttps(connectionOptions);
                         });
 
                     });

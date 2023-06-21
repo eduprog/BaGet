@@ -4,9 +4,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace BaGet
 {
-    public class eSistemLojaApiService : BackgroundService
+    public class BagetService : BackgroundService
     {
-        public eSistemLojaApiService()
+        public BagetService()
         {
            
         }

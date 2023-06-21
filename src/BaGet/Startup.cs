@@ -19,12 +19,12 @@ namespace BaGet
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
-            var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
-            string password = "@BReSistem2023#";
-            configuration["Kestrel:Certificates:Default:Path"] = certPath;
-            configuration["Kestrel:Certificates:Default:KeyPath"] = keyPath;
-            configuration["Kestrel:Certificates:Default:Password"] = password;
+            //var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
+            //var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
+            //string password = "@BReSistem2023#";
+            //configuration["Kestrel:Certificates:Default:Path"] = certPath;
+            //configuration["Kestrel:Certificates:Default:KeyPath"] = keyPath;
+            //configuration["Kestrel:Certificates:Default:Password"] = password;
 
         }
 
@@ -34,7 +34,7 @@ namespace BaGet
         {
 
 
-            services.AddHostedService<eSistemLojaApiService>();
+            services.AddHostedService<BagetService>();
             services.AddWindowsService();
             // TODO: Ideally we'd use:
             //
@@ -72,11 +72,18 @@ namespace BaGet
             //app.AddAzureTableDatabase();
             app.AddMySqlDatabase();
             app.AddPostgreSqlDatabase();
-            app.AddSqliteDatabase();
+            app.AddSqliteDatabase(opt =>
+            {
+                //Configurando local da base
+                opt.ConnectionString = $@"Data Source={AppDomain.CurrentDomain.BaseDirectory}\Baget.db;";
+            });
             app.AddSqlServerDatabase();
 
             // Add storage providers.
-            app.AddFileStorage();
+            app.AddFileStorage(opt => {
+                //Configurando onde fica o packages
+                opt.Path = AppDomain.CurrentDomain.BaseDirectory;
+            });
             app.AddAliyunOssStorage();
             app.AddAwsS3Storage();
             //app.AddAzureBlobStorage();

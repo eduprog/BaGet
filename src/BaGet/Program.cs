@@ -106,12 +106,12 @@ namespace BaGet
                         //options.ListenAnyIP(61437);
                         options.ListenAnyIP(61438, cfg =>
                         {
-                            var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
-                            var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
-                            string password = "@BReSistem2023#";
-                            var cert = new X509Certificate2(certPath,password);
-                            
-                            cfg.UseHttps();
+                            //var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
+                            //var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
+                            //string password = "@BReSistem2023#";
+                            //var cert = new X509Certificate2(certPath, password);
+
+                            //cfg.UseHttps();
                         });
 
                     });

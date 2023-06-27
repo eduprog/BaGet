@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Net;
 using BaGet.Core;
 using BaGet.Web;
 using Microsoft.AspNetCore.Builder;

@@ -1,13 +1,12 @@
 using System;
 using System.IO;
-using System.Security;
-using System.Security.Cryptography.X509Certificates;
+using System.Net;
 using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Web;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +27,19 @@ using Microsoft.Extensions.Hosting;
 
     - Removendo eSistemLojaAPI dos serviços do windows
     sc.exe delete "eSistemLojaAPI"
+
+
+Para funcionar em https, não esquecer que o dns tem de apontar o endereço correto, ou seja.
+
+O domínio que está configurado como por exemplo o nuget.esistem.com.br deverá constar no host da máquina de dev.
+Caso contrário haverá um erro de sistema.
+
+Seguir os passos de https://dylanbeattie.net/2020/11/18/using-https-with-kestrel.html Funcionando perfeito.
+
+Verificar o funcionamento que está no eSistemLoja.Api pois talvez o erro seja somente de domínio e a geração do
+certificado. Lembrar que o certificado é gerado para um determinado domínio, ou determinados domínios.
+
+
  */
 
 
@@ -96,26 +108,27 @@ namespace BaGet
                     //web.UseUrls(
                     //    //$"http://*:61437",
                     //    $"https://*:61438");
-                    _ = web
-                        .UseUrls()
-                        .UseKestrel()
+                    web
+                        //.UseUrls()
+                        //.UseKestrel()
                         .ConfigureKestrel(options =>
                     {
+                        var port = 61438;
                         // Remove the upload limit from Kestrel. If needed, an upload limit can
                         // be enforced by a reverse proxy server, like IIS.
                         //options.Limits.MaxRequestBodySize = null;
                         //options.ListenAnyIP(61437);
-                        options.ListenAnyIP(61438, cfg =>
+                        options.Listen(IPAddress.Any, port, listenOptions =>
                         {
-                            //var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "mycert.crt");
+                            var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "certificate.pfx");
                             //////var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
-                            //////string password = "@BReSistem2023#";
+                            var password = "#eSistem2023@";
                             //var cert = new X509Certificate2(certPath);
                             //var connectionOptions = new HttpsConnectionAdapterOptions();
                             //connectionOptions.ServerCertificate = cert;
-                            //cfg.UseHttps(connectionOptions);
+                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                            listenOptions.UseHttps(certPath,password);
                         });
-
                     });
 
                     web.UseStartup<Startup>();

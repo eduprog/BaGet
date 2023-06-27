@@ -25,22 +25,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Certificados\cert.pem">
+    <None Update="Certificados\ca_bundle.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Certificados\certificate.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Certificados\certificate.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Certificados\e-CNPJ-autocom.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Certificados\key.pem">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Certificados\mycert.crt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Certificados\mycert.csr">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Certificados\mycert.key">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Certificados\private.key">

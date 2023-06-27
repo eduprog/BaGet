@@ -18,12 +18,23 @@ namespace BaGet
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            //var certPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "cert.pem");
+            //var keyPath = Path.Combine(AppContext.BaseDirectory, "Certificados", "key.pem");
+            //string password = "@BReSistem2023#";
+            //configuration["Kestrel:Certificates:Default:Path"] = certPath;
+            //configuration["Kestrel:Certificates:Default:KeyPath"] = keyPath;
+            //configuration["Kestrel:Certificates:Default:Password"] = password;
+
         }
 
         private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            services.AddHostedService<BagetService>();
+            services.AddWindowsService();
             // TODO: Ideally we'd use:
             //
             //       services.ConfigureOptions<ConfigureBaGetOptions>();
@@ -52,26 +63,49 @@ namespace BaGet
             services.AddSingleton<IConfigureOptions<MvcRazorRuntimeCompilationOptions>, ConfigureRazorRuntimeCompilation>();
 
             services.AddCors();
+
+
+            //services.AddHsts(options =>
+            //{
+            //    options.Preload = true;
+            //    options.IncludeSubDomains = true;
+            //    options.MaxAge = TimeSpan.FromDays(60);
+            //    options.ExcludedHosts.Add("example.com");
+            //    options.ExcludedHosts.Add("www.example.com");
+            //});
+
+            //services.AddHttpsRedirection(options =>
+            //{
+            //    options.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
+            //    options.HttpsPort = 61438;
+            //});
+
         }
 
         private void ConfigureBaGetApplication(BaGetApplication app)
         {
             // Add database providers.
-            app.AddAzureTableDatabase();
+            //app.AddAzureTableDatabase();
             app.AddMySqlDatabase();
             app.AddPostgreSqlDatabase();
-            app.AddSqliteDatabase();
+            app.AddSqliteDatabase(opt =>
+            {
+                //Configurando local da base
+                opt.ConnectionString = $@"Data Source={AppDomain.CurrentDomain.BaseDirectory}\Baget.db;";
+            });
             app.AddSqlServerDatabase();
 
             // Add storage providers.
-            app.AddFileStorage();
+            app.AddFileStorage(opt => {
+                //Configurando onde fica o packages
+                opt.Path = AppDomain.CurrentDomain.BaseDirectory;
+            });
             app.AddAliyunOssStorage();
             app.AddAwsS3Storage();
-            app.AddAzureBlobStorage();
+            //app.AddAzureBlobStorage();
             app.AddGoogleCloudStorage();
-
             // Add search providers.
-            app.AddAzureSearch();
+            //app.AddAzureSearch();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,6 +122,9 @@ namespace BaGet
             app.UseForwardedHeaders();
             app.UsePathBase(options.PathBase);
 
+            app.UseHsts();
+            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
             app.UseRouting();
 
@@ -100,6 +137,8 @@ namespace BaGet
 
                 baget.MapEndpoints(endpoints);
             });
+            
+            
         }
     }
 }

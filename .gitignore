@@ -22,6 +22,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 .cache/
+[Dd]istro/
+
+
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -272,3 +275,5 @@ __pycache__/
 **/baget.db
 **/baget.db-shm
 **/baget.db-wal
+/src/BaGet/packages-
+*.db

@@ -13,20 +13,20 @@ using Microsoft.Extensions.Hosting;
 
 
 /* 
-    - Publicando o projeto eSistemLoja.API
-    dotnet publish -c Release -r win-x64 --self-contained true --property:PublishDir=../../distro/setup/publish/
+    - Publicando o projeto Nuget Server 
+    dotnet publish -c Release -r win-x64 --self-contained true --property:PublishDir=C:\trab\devel\publish\NugetServer
 
-    - Adicionar eSistemLojaAPI como serviço do windows
-    sc.exe create "eSistemLojaAPI" binpath=".\Projeto\Setup\Publish\eSistemLoja.API.exe" start= auto
+    - Adicionar eSistem NugetServer como serviço do windows
+    sc.exe create "eSistem - NugetServer" binpath="C:\trab\devel\publish\NugetServer\BaGet.exe" start= auto
 
-    - Inciando o serviço do windows eSistemLojaAPI
-    sc.exe start "eSistemLojaAPI"
+    - Inciando o serviço do windows 
+    sc.exe start "eSistem - NugetServer"
 
-    - Parando o serviço do windows eSistemLojaAPI
-    sc.exe stop "eSistemLojaAPI"
+    - Parando o serviço do windows
+    sc.exe stop "eSistem - NugetServer"
 
-    - Removendo eSistemLojaAPI dos serviços do windows
-    sc.exe delete "eSistemLojaAPI"
+    - Removendo dos serviços do windows
+    sc.exe delete "eSistem - NugetServer"
 
 
 Para funcionar em https, não esquecer que o dns tem de apontar o endereço correto, ou seja.
@@ -39,6 +39,8 @@ Seguir os passos de https://dylanbeattie.net/2020/11/18/using-https-with-kestrel
 Verificar o funcionamento que está no eSistemLoja.Api pois talvez o erro seja somente de domínio e a geração do
 certificado. Lembrar que o certificado é gerado para um determinado domínio, ou determinados domínios.
 
+
+Usar Certificado da https://app.zerossl.com/dashboard free por 90 dias e pode ir renovando.
 
  */
 

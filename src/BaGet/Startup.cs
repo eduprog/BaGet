@@ -9,12 +9,14 @@ using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BaGet
 {
     public class Startup
     {
+      
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -24,7 +26,6 @@ namespace BaGet
             //configuration["Kestrel:Certificates:Default:Path"] = certPath;
             //configuration["Kestrel:Certificates:Default:KeyPath"] = keyPath;
             //configuration["Kestrel:Certificates:Default:Password"] = password;
-
         }
 
         private IConfiguration Configuration { get; }
@@ -32,7 +33,7 @@ namespace BaGet
         public void ConfigureServices(IServiceCollection services)
         {
 
-
+            services.AddLogging();
             services.AddHostedService<BagetService>();
             services.AddWindowsService();
             // TODO: Ideally we'd use:
@@ -109,7 +110,7 @@ namespace BaGet
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,ILogger<Startup> logger)
         {
             var options = Configuration.Get<BaGetOptions>();
 
@@ -131,14 +132,40 @@ namespace BaGet
             app.UseCors(ConfigureBaGetOptions.CorsPolicy);
             app.UseOperationCancelledMiddleware();
 
+            app.Use(async (context, next) =>
+            {
+                // Verificar se o protocolo é HTTPS
+                if (context.Request.IsHttps)
+                {
+                    logger.LogInformation("Request está usando HTTPS.");
+                }
+                else
+                {
+                    logger.LogWarning("Request não está usando HTTPS.");
+                }
+
+                await next.Invoke();
+            });
+
+
+            app.Use(async (context, next) =>
+            {
+                // Log request information
+                logger.LogInformation("Request: {Method} {Path}", context.Request.Method, context.Request.Path);
+
+                await next.Invoke();
+
+                // Log response information
+                logger.LogInformation("Response: {StatusCode}", context.Response.StatusCode);
+            });
             app.UseEndpoints(endpoints =>
             {
                 var baget = new BaGetEndpointBuilder();
 
                 baget.MapEndpoints(endpoints);
             });
-            
-            
+
+
         }
     }
 }

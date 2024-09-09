@@ -40,7 +40,7 @@ namespace BaGet.Azure
 
                 await _table.ExecuteAsync(operation, cancellationToken);
             }
-            catch (StorageException e) when (e.IsAlreadyExistsException())
+            catch (StorageException e)  //when (e.IsAlreadyExistsException())
             {
                 return PackageAddResult.PackageAlreadyExists;
             }
@@ -77,7 +77,7 @@ namespace BaGet.Azure
                     return;
                 }
                 catch (StorageException e)
-                    when (attempt < MaxPreconditionFailures && e.IsPreconditionFailedException())
+                    when (attempt < MaxPreconditionFailures) // && e.IsPreconditionFailedException())
                 {
                     attempt++;
                     _logger.LogWarning(
@@ -204,7 +204,7 @@ namespace BaGet.Azure
             {
                 await _table.ExecuteAsync(operation, cancellationToken);
             }
-            catch (StorageException e) when (e.IsNotFoundException())
+            catch (StorageException e) //when (e.IsNotFoundException())
             {
                 return false;
             }
